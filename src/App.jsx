@@ -1,25 +1,29 @@
-import React, { useState } from "react";
+import React, { useCallback, useMemo, useState } from "react";
 import "./App.css";
 
 // 리스트 항목 컴포넌트
-const ListItem = ({ item, onClick }) => {
+const ListItem = React.memo(({ item, onClick }) => {
   console.log(`Rendering ${item}`);
   return <li onClick={() => onClick(item)}>{item}</li>;
-};
+})
 
 const App = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedItem, setSelectedItem] = useState(null);
 
-  const items = ["Apple", "Banana", "Cherry", "Date", "Fig", "Grape"];
+  const items = useMemo(() => ["Apple", "Banana", "Cherry", "Date", "Fig", "Grape"], [])
 
-  const filteredItems = items.filter((item) =>
-    item.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  const filteredItems = useMemo(
+    () => items.filter((item) => item.toLowerCase().includes(searchTerm.toLowerCase())),
+    [searchTerm]
+  )
 
-  const handleItemClick = (item) => {
-    setSelectedItem(item);
-  };
+  const handleItemClick = useCallback(
+    (item) => setSelectedItem(item),
+    []
+  )
+
+  // console.log("---- app rendered")
 
   return (
     <div className="app-wrapper">
